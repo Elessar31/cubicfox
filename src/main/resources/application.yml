@@ -1,0 +1,18 @@
+feign:
+  client:
+    config:
+      userClient:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cubicfox
+    username: postgres
+    password: su
+    driver-class-name: org.postgresql.Driver
+
+logging:
+  level:
+      com.cubicfox.restApiTest.client.UserClient: DEBUG
