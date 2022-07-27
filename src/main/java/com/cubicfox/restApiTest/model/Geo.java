@@ -2,8 +2,10 @@ package com.cubicfox.restApiTest.model;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class Geo{
-    private String lat;
-    private String lng;
+    private BigDecimal lat;
+    private BigDecimal lng;
 }
