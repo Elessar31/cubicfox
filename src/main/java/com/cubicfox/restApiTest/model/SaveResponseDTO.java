@@ -1,9 +1,15 @@
 package com.cubicfox.restApiTest.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SaveResponseDTO {
-    private int status;
-    private int successCount;
+    private boolean success;
+    private String error;
 }

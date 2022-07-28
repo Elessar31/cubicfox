@@ -10,7 +10,7 @@ feign:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/cubicfox
+    url: jdbc:postgresql://localhost:5432/cubicfox_test
     username: postgres
     password: su
     driver-class-name: org.postgresql.Driver
