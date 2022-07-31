@@ -14,7 +14,13 @@ spring:
     username: postgres
     password: su
     driver-class-name: org.postgresql.Driver
+  profiles:
+    active: test
 
 logging:
   level:
       com.cubicfox.restApiTest.client.UserClient: DEBUG
+
+user:
+  client:
+    url: http://localhost:9561

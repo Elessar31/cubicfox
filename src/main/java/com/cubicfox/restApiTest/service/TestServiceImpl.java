@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Service
 public class TestServiceImpl implements TestService {
-    private static final int NUMBER_OF_TRIES = 5;
+
     private final UserClient userClient;
     private final UserService userServiceImpl;
     Logger logger = LoggerFactory.getLogger(TestServiceImpl.class);

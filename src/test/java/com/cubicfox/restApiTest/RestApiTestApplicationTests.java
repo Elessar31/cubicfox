@@ -5,13 +5,14 @@ import com.cubicfox.restApiTest.model.Address;
 import com.cubicfox.restApiTest.model.Company;
 import com.cubicfox.restApiTest.model.Geo;
 import com.cubicfox.restApiTest.model.Users;
+import com.cubicfox.restApiTest.provider.UserProvider;
 import com.cubicfox.restApiTest.service.UserService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.simpleflatmapper.sql2o.SfmResultSetHandlerFactoryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.sql2o.Connection;
@@ -30,6 +31,9 @@ class RestApiTestApplicationTests {
 
     @Autowired
     private UserService userServiceImpl;
+
+    @Autowired
+    private UserProvider userProvider;
 
     @Autowired
     private DataSource dataSource;
@@ -59,10 +63,21 @@ class RestApiTestApplicationTests {
         assertThat(getDBRowCount(), is(0));
         userServiceImpl.save(user);
         assertThat(getDBRowCount(), is(1));
-        Users dbUser = getUserFromDb(user.getId());
+        Users dbUser = userProvider.getUserById(user.getId());
         assertThat(user.getName(), is(dbUser.getName()));
         assertThat(user.getUsername(), is(dbUser.getUsername()));
         assertThat(user.getEmail(), is(dbUser.getEmail()));
+        assertThat(user.getAddress().getStreet(), is(dbUser.getAddress().getStreet()));
+        assertThat(user.getAddress().getSuite(), is(dbUser.getAddress().getSuite()));
+        assertThat(user.getAddress().getCity(), is(dbUser.getAddress().getCity()));
+        assertThat(user.getAddress().getZipcode(), is(dbUser.getAddress().getZipcode()));
+        assertThat(user.getAddress().getGeo().getLat(), Matchers.comparesEqualTo(dbUser.getAddress().getGeo().getLat()));
+        assertThat(user.getAddress().getGeo().getLng(), Matchers.comparesEqualTo(dbUser.getAddress().getGeo().getLng()));
+        assertThat(user.getPhone(), is(dbUser.getPhone()));
+        assertThat(user.getWebsite(), is(dbUser.getWebsite()));
+        assertThat(user.getCompany().getName(), is(dbUser.getCompany().getName()));
+        assertThat(user.getCompany().getCatchPhrase(), is(dbUser.getCompany().getCatchPhrase()));
+        assertThat(user.getCompany().getBs(), is(dbUser.getCompany().getBs()));
     }
 
     @Test
@@ -73,6 +88,7 @@ class RestApiTestApplicationTests {
         userServiceImpl.save(user);
         assertThat(getDBRowCount(), is(0));
     }
+
     @Test
     void saveDuplicateUserTest() {
         Users user = createUser();
@@ -84,9 +100,9 @@ class RestApiTestApplicationTests {
     }
 
     @AfterEach
-    void cleanDb(){
+    void cleanDb() {
         Sql2o sql2o = new Sql2o(dataSource);
-        try(Connection connection = sql2o.open(); Query cleanQuery = connection.createQuery("TRUNCATE TABLE users")){
+        try (Connection connection = sql2o.open(); Query cleanQuery = connection.createQuery("TRUNCATE TABLE users")) {
             cleanQuery.executeUpdate();
         }
     }
@@ -94,20 +110,19 @@ class RestApiTestApplicationTests {
     private Users createUser() {
         Users users = new Users();
         Address address = new Address();
-        Company company = new Company();
         Geo geo = new Geo();
-        geo.setLat(new BigDecimal("222.22"));
-        geo.setLng(new BigDecimal("222.22"));
-        address.setGeo(geo);
-        address.setCity("Pécs");
-        address.setStreet("Majorossy");
-        address.setZipcode("7625");
-        address.setSuite("suite");
-        users.setAddress(address);
-        company.setBs("bs");
-        company.setName("CubicFox");
-        company.setCatchPhrase("CatchPhrase");
+        Company company = new Company();
         users.setCompany(company);
+        users.setAddress(address);
+        users.getAddress().getGeo().setLat(new BigDecimal("222.22"));
+        users.getAddress().getGeo().setLng(new BigDecimal("222.22"));
+        users.getAddress().setCity("Pécs");
+        users.getAddress().setStreet("Majorossy");
+        users.getAddress().setZipcode("7625");
+        users.getAddress().setSuite("suite");
+        users.getCompany().setBs("bs");
+        users.getCompany().setName("CubicFox");
+        users.getCompany().setCatchPhrase("CatchPhrase");
         users.setName("Attila");
         users.setUsername("Attila");
         users.setId(1);
@@ -124,14 +139,6 @@ class RestApiTestApplicationTests {
         }
     }
 
-    private Users getUserFromDb(int id) {
-        Sql2o sql2o = new Sql2o(dataSource);
-        try (Connection connection = sql2o.open(); Query query = connection.createQuery("SELECT id, name, username, email FROM users where id = :id")) {
-            query.addParameter("id", id);
-            query.setAutoDeriveColumnNames(true);
-            query.setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
-            return query.executeAndFetchFirst(Users.class);
-        }
-    }
+
 
 }

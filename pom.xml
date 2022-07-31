@@ -68,9 +68,9 @@
             <version>1.6.0</version>
         </dependency>
         <dependency>
-            <groupId>org.simpleflatmapper</groupId>
-            <artifactId>sfm-sql2o</artifactId>
-            <version>8.2.3</version>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>2.27.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

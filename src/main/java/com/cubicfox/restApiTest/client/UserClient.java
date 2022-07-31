@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
-@FeignClient(value = "userClient", url = "https://jsonplaceholder.typicode.com/", fallback = UserClientFallBack.class)
+@FeignClient(value = "userClient", url = "${user.client.url}", fallback = UserClientFallBack.class, fallbackFactory = UserClientFallbackFactory.class)
 public interface UserClient {
     @RequestMapping(method = RequestMethod.GET, value = "/users")
     List<Users> getUsers();

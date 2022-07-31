@@ -18,3 +18,7 @@ spring:
 logging:
   level:
       com.cubicfox.restApiTest.client.UserClient: DEBUG
+
+user:
+  client:
+    url: https://jsonplaceholder.typicode.com/
